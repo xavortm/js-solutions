@@ -1,0 +1,28 @@
+{
+  "name": "js-solutions",
+  "version": "1.0.0",
+  "description": "A collection of simple vanilla JS snippets to UI components often seen in web. This is NOT a library or a framework.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xavortm/js-solutions.git"
+  },
+  "author": "Alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xavortm/js-solutions/issues"
+  },
+  "homepage": "https://github.com/xavortm/js-solutions#readme",
+  "devDependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-uglify": "^3.0.2"
+  }
+}

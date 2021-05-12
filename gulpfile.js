@@ -6,7 +6,10 @@ const rename = require("gulp-rename");
 const concat = require("gulp-concat");
 const babel = require("gulp-babel");
 
-const scriptsPath = "./src/";
+const sass = require("gulp-sass");
+sass.compiler = require("node-sass");
+
+const srcPath = "./src/";
 const distPath = "./dist/";
 
 function getFolders(dir) {
@@ -20,7 +23,15 @@ function build(cb) {
 }
 
 function cssTranspile(cb) {
-  // Sass to css here for each folder
+  let folders = getFolders(srcPath);
+
+  folders.map((folder) =>
+    gulp
+      .src(path.join(srcPath, folder, "/**/*.scss"))
+      .pipe(sass().on("error", sass.logError))
+      .pipe(gulp.dest(distPath + "/" + folder))
+  );
+
   cb();
 }
 
@@ -29,11 +40,11 @@ function cssBundle(cb) {
 }
 
 function jsTranspile(cb) {
-  let folders = getFolders(scriptsPath);
+  let folders = getFolders(srcPath);
 
   folders.map((folder) =>
     gulp
-      .src(path.join(scriptsPath, folder, "/**/script.js"))
+      .src(path.join(srcPath, folder, "/**/script.js"))
       .pipe(
         babel({
           presets: ["@babel/env"],
@@ -45,6 +56,16 @@ function jsTranspile(cb) {
   cb();
 }
 
+function watchFiles() {
+  let folders = getFolders(srcPath);
+
+  gulp.watch("src/**/script.js", jsTranspile);
+  gulp.watch("src/**/*.scss", cssTranspile);
+}
+
+const watch = gulp.parallel(watchFiles);
+
 exports.build = gulp.series(gulp.parallel(cssTranspile, jsTranspile));
+exports.watch = watch;
 
 exports.default = gulp.series(build);

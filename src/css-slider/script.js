@@ -1,2 +1,7 @@
-const test = 5;
-console.log(test + "Hello world");
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    console.log("ready!");
+  },
+  false
+);

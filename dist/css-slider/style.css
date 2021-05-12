@@ -1,0 +1,2 @@
+.slider-container .slider-item:not(.is-current) {
+  display: none; }

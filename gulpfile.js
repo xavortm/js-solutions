@@ -41,6 +41,7 @@ function cssBundle(cb) {
 
 function jsTranspile(cb) {
   let folders = getFolders(srcPath);
+  console.log(folders);
 
   folders.map((folder) =>
     gulp

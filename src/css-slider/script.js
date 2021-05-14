@@ -12,12 +12,20 @@ document.addEventListener(
   false
 );
 
-function simpleSlider(slider) {
+function simpleSlider(slider, options) {
+  options = Object.assign(
+    {
+      loop: false,
+    },
+    options
+  );
+
   const slides = slider.querySelectorAll(".slider-item");
   const navPrev = slider.querySelector(".js-slide-prev");
   const navNext = slider.querySelector(".js-slide-next");
 
   let currentSlidePosition = 0;
+  let slidesCount = slides.length - 1; // becauase we count from 0
 
   const sliderInitActive = () => {
     let hasCurrentSet = false;
@@ -32,10 +40,49 @@ function simpleSlider(slider) {
     !hasCurrentSet && slides[0].classList.add("is-current");
   };
 
+  const setActive = (oldSlide, newSlide) => {
+    slides[oldSlide].classList.remove("is-current");
+    slides[newSlide].classList.add("is-current");
+  };
+
   const handleNavigation = () => {
     if (!navPrev && !navNext) {
       return;
     }
+
+    navPrev.addEventListener(
+      "click",
+      (event) => {
+        const oldSlide = currentSlidePosition;
+        currentSlidePosition -= 1;
+
+        if (currentSlidePosition < 0 && options.loop) {
+          currentSlidePosition = slidesCount;
+        } else if (currentSlidePosition < 0 && !options.loop) {
+          currentSlidePosition = 0;
+        }
+
+        setActive(oldSlide, currentSlidePosition);
+      },
+      false
+    );
+
+    navNext.addEventListener(
+      "click",
+      (event) => {
+        const oldSlide = currentSlidePosition;
+        currentSlidePosition += 1;
+
+        if (currentSlidePosition > slidesCount && options.loop) {
+          currentSlidePosition = 0;
+        } else if (currentSlidePosition > slidesCount && !options.loop) {
+          currentSlidePosition = slidesCount;
+        }
+
+        setActive(oldSlide, currentSlidePosition);
+      },
+      false
+    );
   };
 
   // Let's get the party going

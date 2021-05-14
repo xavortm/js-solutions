@@ -9,11 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 }, false);
 
-function simpleSlider(slider) {
+function simpleSlider(slider, options) {
+  options = Object.assign({
+    loop: false
+  }, options);
   var slides = slider.querySelectorAll(".slider-item");
   var navPrev = slider.querySelector(".js-slide-prev");
   var navNext = slider.querySelector(".js-slide-next");
   var currentSlidePosition = 0;
+  var slidesCount = slides.length - 1; // becauase we count from 0
 
   var sliderInitActive = function sliderInitActive() {
     var hasCurrentSet = false;
@@ -26,10 +30,40 @@ function simpleSlider(slider) {
     !hasCurrentSet && slides[0].classList.add("is-current");
   };
 
+  var setActive = function setActive(oldSlide, newSlide) {
+    slides[oldSlide].classList.remove("is-current");
+    slides[newSlide].classList.add("is-current");
+  };
+
   var handleNavigation = function handleNavigation() {
     if (!navPrev && !navNext) {
       return;
     }
+
+    navPrev.addEventListener("click", function (event) {
+      var oldSlide = currentSlidePosition;
+      currentSlidePosition -= 1;
+
+      if (currentSlidePosition < 0 && options.loop) {
+        currentSlidePosition = slidesCount;
+      } else if (currentSlidePosition < 0 && !options.loop) {
+        currentSlidePosition = 0;
+      }
+
+      setActive(oldSlide, currentSlidePosition);
+    }, false);
+    navNext.addEventListener("click", function (event) {
+      var oldSlide = currentSlidePosition;
+      currentSlidePosition += 1;
+
+      if (currentSlidePosition > slidesCount && options.loop) {
+        currentSlidePosition = 0;
+      } else if (currentSlidePosition > slidesCount && !options.loop) {
+        currentSlidePosition = slidesCount;
+      }
+
+      setActive(oldSlide, currentSlidePosition);
+    }, false);
   }; // Let's get the party going
 
 

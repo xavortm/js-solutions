@@ -1,7 +1,14 @@
 .slider-container {
+  .slider-slides {
+    position: relative;
+  }
+
   .slider-item {
     &:not(.is-current) {
-      display: none;
+      visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 }

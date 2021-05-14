@@ -16,11 +16,13 @@ function simpleSlider(slider, options) {
   options = Object.assign(
     {
       loop: false,
+      equalHeights: false,
     },
     options
   );
 
   const slides = slider.querySelectorAll(".slider-item");
+  const slidesWrapper = slider.querySelector(".slider-slides");
   const navPrev = slider.querySelector(".js-slide-prev");
   const navNext = slider.querySelector(".js-slide-next");
 
@@ -85,7 +87,22 @@ function simpleSlider(slider, options) {
     );
   };
 
+  const sliderEqualizeHeights = () => {
+    let maxHeight = 0;
+
+    slides.forEach((slide, index) => {
+      console.log(slide.offsetHeight);
+      maxHeight = Math.max(maxHeight, slide.offsetHeight);
+    });
+
+    slidesWrapper.style.minHeight = maxHeight + "px";
+  };
+
   // Let's get the party going
   sliderInitActive();
   handleNavigation();
+
+  if (options.equalHeights) {
+    sliderEqualizeHeights();
+  }
 }

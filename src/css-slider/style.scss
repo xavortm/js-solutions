@@ -11,4 +11,23 @@
       left: 0;
     }
   }
+
+  .slider-dots {
+    margin: 0;
+    padding: 0;
+    display: flex;
+
+    li {
+      list-style: none;
+      width: 1em;
+      height: 1em;
+      background: black;
+      border-radius: 50%;
+      opacity: 0.3;
+
+      &.is-current {
+        opacity: 1;
+      }
+    }
+  }
 }

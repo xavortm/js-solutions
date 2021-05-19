@@ -6,7 +6,7 @@ document.addEventListener(
 
     // And simple enough, run the slider function for each one.
     sliders.forEach((slider) => {
-      simpleSlider(slider);
+      simpleSlider(slider, { dots: true });
     });
   },
   false
@@ -17,19 +17,21 @@ function simpleSlider(slider, options) {
     {
       loop: false,
       equalHeights: false,
+      dots: false,
     },
     options
   );
 
   const slides = slider.querySelectorAll(".slider-item");
   const slidesWrapper = slider.querySelector(".slider-slides");
+  const dotsWrapper = slider.querySelector(".slider-dots");
   const navPrev = slider.querySelector(".js-slide-prev");
   const navNext = slider.querySelector(".js-slide-next");
 
   let currentSlidePosition = 0;
   let slidesCount = slides.length - 1; // becauase we count from 0
 
-  const sliderInitActive = () => {
+  const initActive = () => {
     let hasCurrentSet = false;
 
     slides.forEach((slide, index) => {
@@ -42,9 +44,13 @@ function simpleSlider(slider, options) {
     !hasCurrentSet && slides[0].classList.add("is-current");
   };
 
-  const setActive = (oldSlide, newSlide) => {
-    slides[oldSlide].classList.remove("is-current");
+  const setActive = (newSlide) => {
+    const dots = dotsWrapper.querySelectorAll("li");
+    slides.forEach((slide) => slide.classList.remove("is-current"));
+    dots.forEach((dot) => dot.classList.remove("is-current"));
+
     slides[newSlide].classList.add("is-current");
+    dots[newSlide].classList.add("is-current");
   };
 
   const handleNavigation = () => {
@@ -55,7 +61,6 @@ function simpleSlider(slider, options) {
     navPrev.addEventListener(
       "click",
       (event) => {
-        const oldSlide = currentSlidePosition;
         currentSlidePosition -= 1;
 
         if (currentSlidePosition < 0 && options.loop) {
@@ -64,7 +69,7 @@ function simpleSlider(slider, options) {
           currentSlidePosition = 0;
         }
 
-        setActive(oldSlide, currentSlidePosition);
+        setActive(currentSlidePosition);
       },
       false
     );
@@ -72,7 +77,6 @@ function simpleSlider(slider, options) {
     navNext.addEventListener(
       "click",
       (event) => {
-        const oldSlide = currentSlidePosition;
         currentSlidePosition += 1;
 
         if (currentSlidePosition > slidesCount && options.loop) {
@@ -81,7 +85,7 @@ function simpleSlider(slider, options) {
           currentSlidePosition = slidesCount;
         }
 
-        setActive(oldSlide, currentSlidePosition);
+        setActive(currentSlidePosition);
       },
       false
     );
@@ -90,19 +94,53 @@ function simpleSlider(slider, options) {
   const sliderEqualizeHeights = () => {
     let maxHeight = 0;
 
-    slides.forEach((slide, index) => {
-      console.log(slide.offsetHeight);
+    slides.forEach((slide) => {
       maxHeight = Math.max(maxHeight, slide.offsetHeight);
     });
 
     slidesWrapper.style.minHeight = maxHeight + "px";
   };
 
+  const initDots = () => {
+    let dots = [];
+    if (!dotsWrapper) {
+      console.warn("Dots container not found");
+      return;
+    }
+
+    slides.forEach((slide, index) => {
+      const dotElement = document.createElement("li");
+
+      dotElement.className = "slider-dot";
+      dotElement.setAttribute("slide-id", index);
+
+      if (currentSlidePosition === index) {
+        dotElement.className += " is-current";
+        console.log(dotElement.className, currentSlidePosition, index);
+      }
+
+      dotsWrapper.appendChild(dotElement);
+      dots.push(dotElement);
+
+      dotElement.addEventListener("click", (event) => {
+        dots.forEach((dot) => dot.classList.remove("is-current"));
+        dotElement.classList.add("is-current");
+
+        currentSlidePosition = index;
+        setActive(currentSlidePosition);
+      });
+    });
+  };
+
   // Let's get the party going
-  sliderInitActive();
+  initActive();
   handleNavigation();
 
   if (options.equalHeights) {
     sliderEqualizeHeights();
+  }
+
+  if (options.dots) {
+    initDots();
   }
 }
